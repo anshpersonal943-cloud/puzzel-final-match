@@ -32,7 +32,7 @@ const MAX_ROOM_SIZE = 50; // Increased to handle 40+ players per room
 // {
 //   players: [{id, name, progress: 0}], // progress is percentage 0-100
 //   image: "",       (base64 JPEG from host)
-//   size: 3,
+//   size: 4, 5, or 6 depending on the current level,
 //   started: false,
 //   startTime: null,
 //   currentLevel: 0
@@ -96,7 +96,26 @@ function loadImageSetFromFolder(folder) {
   }
 }
 
-let backendDefaultImageSet1 = loadImageSetFromFolder('images/Set1');
+function loadImageSetFromLevelFolders(folders) {
+  try {
+    return folders.flatMap(folder => {
+      const entries = fs.readdirSync(path.join(__dirname, folder), { withFileTypes: true });
+      return entries
+        .filter(entry => entry.isFile() && IMAGE_SET_EXTENSIONS.includes(path.extname(entry.name).toLowerCase()))
+        .map(entry => `/${folder.split(/[\\/]/).map(encodeURIComponent).join('/')}/${encodeURIComponent(entry.name)}`)
+        .sort()
+        .slice(0, 2);
+    });
+  } catch (error) {
+    return [];
+  }
+}
+
+let backendDefaultImageSet1 = loadImageSetFromLevelFolders([
+  'images/Set1/1st level',
+  'images/Set1/2nd level',
+  'images/Set1/3rd level',
+]);
 if (backendDefaultImageSet1.length !== IMAGE_SET_LENGTH) {
   backendDefaultImageSet1 = [
     'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop',
@@ -253,8 +272,10 @@ io.on('connection', (socket) => {
       p.startTime = now;
     });
 
-    // Shuffle and send imageSet to players only; host remains in lobby.
-    const imageSetToSend = Array.isArray(imageSet) ? shuffleArray(imageSet) : [];
+    // Keep Set 1's level images ordered; shuffle the other sets.
+    const imageSetToSend = Array.isArray(imageSet)
+      ? (selectedSet === 'set1' ? imageSet.slice() : shuffleArray(imageSet))
+      : [];
     console.log(`[Game] Emitting gameStarted with shuffled imageSet:`, imageSetToSend);
 
     socket.to(rid).emit('gameStarted', {

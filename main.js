@@ -144,7 +144,7 @@ let hostGameStartTime = null;
 let hostTimerInterval = null;
 const PUZZLES_PER_LEVEL = 2;
 const TOTAL_LEVELS = 3;
-const levelSizes = [3, 4, 5];
+const levelSizes = [4, 5, 6];
 
 const viewJoin = document.getElementById('viewJoin');
 const viewLobby = document.getElementById('viewLobby');
@@ -295,7 +295,7 @@ function shuffleArray(arr) {
 }
 
 function getBoardSize() {
-  return levelSizes[currentLevelIndex] || 3;
+  return levelSizes[currentLevelIndex] || levelSizes[0];
 }
 
 function setupTileGame(imageUrl) {
@@ -424,8 +424,17 @@ function moveTileToTray(tid, update = true) {
 function updateTilePositions() {
   if (!puzzleBoard || !tileTray) return;
   const boardWidth = puzzleBoard.clientWidth;
+  if (boardWidth <= 0) return;
   const gap = 3;
   const tileSize = Math.floor((boardWidth - gap * (size - 1)) / size);
+
+  puzzleBoard.querySelectorAll('.drop-zone').forEach(zone => {
+    const pos = parseInt(zone.dataset.pos, 10);
+    zone.style.width = `${tileSize}px`;
+    zone.style.height = `${tileSize}px`;
+    zone.style.left = `${(pos % size) * (tileSize + gap)}px`;
+    zone.style.top = `${Math.floor(pos / size) * (tileSize + gap)}px`;
+  });
 
   Object.values(tileEls).forEach(el => {
     const tid = parseInt(el.dataset.tid, 10);
@@ -464,6 +473,8 @@ function updateTilePositions() {
     }
   });
 }
+
+window.addEventListener('resize', updateTilePositions);
 
 function checkSolved() {
   for (let i = 0; i < tiles.length; i++) {

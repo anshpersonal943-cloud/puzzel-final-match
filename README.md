@@ -7,7 +7,7 @@ A fun, colorful multiplayer sliding puzzle game for kids, built with Node.js, Ex
 - **Host-Controlled Game**: Only the host can upload the puzzle image and start the game.
 - **Multiplayer Rooms**: Players join using a room ID.
 - **Real-Time Updates**: Live rankings and game state synchronization.
-- **3x3 Sliding Puzzle**: Image is split into tiles that players must rearrange.
+- **Progressive Puzzle Difficulty**: Three levels use 4x4, 5x5, and 6x6 tile grids.
 - **Timer**: Tracks time during the game.
 - **Winner Detection**: First player to solve the puzzle wins.
 - **Refresh-Safe**: Players automatically rejoin the game on page refresh.
@@ -46,7 +46,8 @@ Local development uses temporary in-memory room state when the Upstash variables
 
 ## Game Rules
 
-- The puzzle is always 3x3 for simplicity.
+- Each of the three levels contains two image puzzles.
+- Grid sizes increase by level: 4x4, 5x5, then 6x6.
 - The image is shuffled randomly but remains solvable.
 - Players can only move tiles adjacent to the empty space.
 - The game ends when the first player solves the puzzle.

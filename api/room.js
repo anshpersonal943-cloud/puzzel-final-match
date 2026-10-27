@@ -2,12 +2,12 @@ const crypto = require('crypto');
 
 const IMAGE_SETS = {
   set1: [
-    '/images/Set1/1791112715063.png',
-    '/images/Set1/filters_quality(95)format(webp).webp',
-    '/images/Set1/large-cartoon-doraemon-nobita-shizuka-in-anywhere-door-wall-original-imah3ymzzhgh8836.webp',
-    '/images/Set1/118050.jpg',
-    '/images/Set1/45988920-a96c-11ed-bb7e-d4c44f26d91d.jpg',
-    '/images/Set1/acwc2020-scaled.jpg',
+    '/images/Set1/1st level/WhatsApp Image 2026-10-27 at 9.43.12 PM.jpeg',
+    '/images/Set1/1st level/WhatsApp Image 2026-10-27 at 9.43.12 PM (1).jpeg',
+    '/images/Set1/2nd level/WhatsApp Image 2026-10-27 at 9.43.28 PM.jpeg',
+    '/images/Set1/2nd level/WhatsApp Image 2026-10-27 at 9.43.28 PM (1).jpeg',
+    '/images/Set1/3rd level/WhatsApp Image 2026-10-27 at 9.43.50 PM.jpeg',
+    '/images/Set1/3rd level/WhatsApp Image 2026-10-27 at 9.43.50 PM (1).jpeg',
   ],
   set2: [
     '/images/Set2/acwc2020-scaled.jpg',
@@ -59,7 +59,7 @@ function buildImageSets() {
   return Object.fromEntries(Object.entries(IMAGE_SETS).map(([name, images]) => {
     const completeSet = images.slice();
     while (completeSet.length < 6) completeSet.push(images[completeSet.length % images.length]);
-    return [name, shuffleArray(completeSet)];
+    return [name, name === 'set1' ? completeSet : shuffleArray(completeSet)];
   }));
 }
 
